@@ -1,0 +1,903 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>inspector-elasticsearch documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">inspector-elasticsearch documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search">
+</div>
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Interfaces</li>
+  <li>MetricEntry</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>lib/metrics/ElasticsearchMetricReporter.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Entry interface to track the last value and timestamp of a metric instance.</p>
+
+            </p>
+
+
+        <section>
+            <h3 id="index">Index</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Properties</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                        <a href="#lastReport">lastReport</a>
+                                </li>
+                                <li>
+                                        <a href="#lastValue">lastValue</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section>
+                <h3 id="inputs">Properties</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="lastReport"></a>
+                                        <span class="name"><b>lastReport</b><a href="#lastReport"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>lastReport:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Timestamp of the last reporting.</p>
+</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="lastValue"></a>
+                                        <span class="name"><b>lastValue</b><a href="#lastValue"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>lastValue:     <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>    <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Last reported reference value.</p>
+</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import &quot;source-map-support/register&quot;;
+
+import { Client, ConfigOptions } from &quot;elasticsearch&quot;;
+import {
+    Clock,
+    Counter,
+    Gauge,
+    Histogram,
+    Logger,
+    Meter,
+    Metric,
+    MetricRegistry,
+    MetricReporter,
+    MILLISECOND,
+    MINUTE,
+    MonotoneCounter,
+    StdClock,
+    Taggable,
+    Timer,
+    TimeUnit,
+} from &quot;inspector-metrics&quot;;
+
+/**
+ * Entry interface to track the last value and timestamp of a metric instance.
+ *
+ * @interface MetricEntry
+ */
+interface MetricEntry {
+    /**
+     * Timestamp of the last reporting.
+     *
+     * @type {number}
+     * @memberof MetricEntry
+     */
+    lastReport: number;
+
+    /**
+     * Last reported reference value.
+     *
+     * @type {number}
+     * @memberof MetricEntry
+     */
+    lastValue: number;
+}
+
+/**
+ * Enumeration of all metric types.
+ */
+export type MetricType &#x3D; &quot;counter&quot; | &quot;gauge&quot; | &quot;histogram&quot; | &quot;meter&quot; | &quot;timer&quot;;
+
+/**
+ * Interface for getting a certain information using the specified emtric metadata -
+ * e.g. name of the index, metric type, etc.
+ */
+export type MetricInfoDeterminator &#x3D; (registry: MetricRegistry, metric: Metric, type: MetricType, date: Date) &#x3D;&gt; string;
+
+/**
+ * Interface for building a document for a metric.
+ */
+export type MetricDocumentBuilder &#x3D; (
+    registry: MetricRegistry,
+    metric: Metric,
+    type: MetricType,
+    date: Date,
+    tags: Map&lt;string, string&gt;) &#x3D;&gt; {};
+
+/**
+ * A MetricReporter extension used to publish metric values to elasticsearch.
+ *
+ * @export
+ * @class ElasticsearchMetricReporter
+ * @extends {MetricReporter}
+ */
+export class ElasticsearchMetricReporter extends MetricReporter {
+
+    /**
+     * Returns a {@link MetricInfoDeterminator} that returns &#x27;metric&#x27; as type.
+     *
+     * @static
+     * @returns {MetricInfoDeterminator}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public static defaultTypeDeterminator(): MetricInfoDeterminator {
+        return (registry: MetricRegistry, metric: Metric, type: MetricType, date: Date) &#x3D;&gt; &quot;metric&quot;;
+    }
+
+    /**
+     * Returns a {@link MetricInfoDeterminator} that returns an indexname like &#x27;&lt;baseName&gt;-yyyy-mm-dd&#x27;.
+     *
+     * @static
+     * @param {string} baseName The
+     * @returns {MetricInfoDeterminator}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public static dailyIndex(baseName: string): MetricInfoDeterminator {
+        return (registry: MetricRegistry, metric: Metric, type: MetricType, date: Date) &#x3D;&gt; {
+            const day &#x3D; date.getDate();
+            const dayPrefix: string &#x3D; (day &gt;&#x3D; 10) ? &quot;&quot; : &quot;0&quot;;
+            const month &#x3D; date.getMonth() + 1;
+            const monthPrefix: string &#x3D; (month &gt;&#x3D; 10) ? &quot;&quot; : &quot;0&quot;;
+            return &#x60;${baseName}-${date.getFullYear()}-${monthPrefix}${month}-${dayPrefix}${day}&#x60;;
+        };
+    }
+
+    /**
+     * Returns a {@link MetricDocumentBuilder} that builds an object for a metric like this:
+     *
+     * {
+     *
+     *  name: ..., // name of metric
+     *
+     *  group: ..., // group of metric
+     *
+     *  timestamp: ..., // timestamp from parameter
+     *
+     *  tags: ..., // combined tags from this reporter and the metric
+     *
+     *  values..., // metric specific values
+     *
+     *  type..., // metric type
+     *
+     * }
+     *
+     * @static
+     * @returns {MetricDocumentBuilder}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public static defaultDocumentBuilder(): MetricDocumentBuilder {
+        return (
+            registry: MetricRegistry,
+            metric: Metric,
+            type: MetricType,
+            timestamp: Date,
+            commonTags: Map&lt;string, string&gt;) &#x3D;&gt; {
+
+            let values &#x3D; null;
+
+            if (metric instanceof MonotoneCounter) {
+                values &#x3D; ElasticsearchMetricReporter.getMonotoneCounterValues(metric);
+            } else if (metric instanceof Counter) {
+                values &#x3D; ElasticsearchMetricReporter.getCounterValues(metric);
+            } else if (metric instanceof Histogram) {
+                values &#x3D; ElasticsearchMetricReporter.getHistogramValues(metric);
+            } else if (metric instanceof Meter) {
+                values &#x3D; ElasticsearchMetricReporter.getMeterValues(metric);
+            } else if (metric instanceof Timer) {
+                values &#x3D; ElasticsearchMetricReporter.getTimerValues(metric);
+            } else {
+                values &#x3D; ElasticsearchMetricReporter.getGaugeValue(metric as Gauge&lt;any&gt;);
+            }
+
+            if (values &#x3D;&#x3D;&#x3D; null) {
+                return null;
+            }
+
+            const tags &#x3D; ElasticsearchMetricReporter.buildTags(commonTags, metric);
+            const name &#x3D; metric.getName();
+            const group &#x3D; metric.getGroup();
+            return { name, group, tags, timestamp, values, type };
+        };
+    }
+
+    /**
+     * Combines all specified tags.
+     *
+     * @static
+     * @param {Map&lt;string, string&gt;} commonTags - read-only tags from reporter - get with reporter.getTags().
+     * @param {Taggable} taggable - mostly a metric with tags.
+     * @returns {{ [key: string]: string }} Returns a key-value object with all tags combined.
+     * @memberof ElasticsearchMetricReporter
+     */
+    public static buildTags(commonTags: Map&lt;string, string&gt;, taggable: Taggable): { [key: string]: string } {
+        const tags: { [x: string]: string } &#x3D; {};
+        commonTags.forEach((tag, key) &#x3D;&gt; tags[key] &#x3D; tag);
+        taggable.getTags().forEach((tag, key) &#x3D;&gt; tags[key] &#x3D; tag);
+        return tags;
+    }
+
+    /**
+     * Gets the values for the specified monotone counter metric.
+     *
+     * @static
+     * @param {MonotoneCounter} counter
+     * @returns {{}}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public static getMonotoneCounterValues(counter: MonotoneCounter): {} {
+        const count &#x3D; counter.getCount();
+        if (!count || isNaN(count)) {
+            return null;
+        }
+        return { count };
+    }
+
+    /**
+     * Gets the values for the specified counter metric.
+     *
+     * @static
+     * @param {Counter} counter
+     * @returns {{}}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public static getCounterValues(counter: Counter): {} {
+        const count &#x3D; counter.getCount();
+        if (!count || isNaN(count)) {
+            return null;
+        }
+        return { count };
+    }
+
+    /**
+     * Gets the values for the specified {Gauge} metric.
+     *
+     * @static
+     * @param {Gauge&lt;any&gt;} gauge
+     * @returns {{}}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public static getGaugeValue(gauge: Gauge&lt;any&gt;): {} {
+        const value &#x3D; gauge.getValue();
+        if (!value || isNaN(value)) {
+            return null;
+        }
+        return { value };
+    }
+
+    /**
+     * Gets the values for the specified {Histogram} metric.
+     *
+     * @static
+     * @param {Histogram} histogram
+     * @returns {{}}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public static getHistogramValues(histogram: Histogram): {} {
+        const value &#x3D; histogram.getCount();
+        if (!value || isNaN(value)) {
+            return null;
+        }
+        const snapshot &#x3D; histogram.getSnapshot();
+        const values: any &#x3D; {};
+
+        values[&#x60;count&#x60;] &#x3D; value;
+        values[&#x60;max&#x60;] &#x3D; this.getNumber(snapshot.getMax());
+        values[&#x60;mean&#x60;] &#x3D; this.getNumber(snapshot.getMean());
+        values[&#x60;min&#x60;] &#x3D; this.getNumber(snapshot.getMin());
+        values[&#x60;p50&#x60;] &#x3D; this.getNumber(snapshot.getMedian());
+        values[&#x60;p75&#x60;] &#x3D; this.getNumber(snapshot.get75thPercentile());
+        values[&#x60;p95&#x60;] &#x3D; this.getNumber(snapshot.get95thPercentile());
+        values[&#x60;p98&#x60;] &#x3D; this.getNumber(snapshot.get98thPercentile());
+        values[&#x60;p99&#x60;] &#x3D; this.getNumber(snapshot.get99thPercentile());
+        values[&#x60;p999&#x60;] &#x3D; this.getNumber(snapshot.get999thPercentile());
+        values[&#x60;stddev&#x60;] &#x3D; this.getNumber(snapshot.getStdDev());
+
+        return values;
+    }
+
+    /**
+     * Gets the values for the specified {Meter} metric.
+     *
+     * @static
+     * @param {Meter} meter
+     * @returns {{}}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public static getMeterValues(meter: Meter): {} {
+        const value &#x3D; meter.getCount();
+        if (!value || isNaN(value)) {
+            return null;
+        }
+        const values: any &#x3D; {};
+
+        values[&#x60;count&#x60;] &#x3D; value;
+        values[&#x60;m15_rate&#x60;] &#x3D; this.getNumber(meter.get15MinuteRate());
+        values[&#x60;m1_rate&#x60;] &#x3D; this.getNumber(meter.get1MinuteRate());
+        values[&#x60;m5_rate&#x60;] &#x3D; this.getNumber(meter.get5MinuteRate());
+        values[&#x60;mean_rate&#x60;] &#x3D; this.getNumber(meter.getMeanRate());
+
+        return values;
+    }
+
+    /**
+     * Gets the values for the specified {Timer} metric.
+     *
+     * @static
+     * @param {Timer} timer
+     * @returns {{}}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public static getTimerValues(timer: Timer): {} {
+        const value &#x3D; timer.getCount();
+        if (!value || isNaN(value)) {
+            return null;
+        }
+        const snapshot &#x3D; timer.getSnapshot();
+        const values: any &#x3D; {};
+
+        values[&#x60;count&#x60;] &#x3D; value;
+        values[&#x60;m15_rate&#x60;] &#x3D; this.getNumber(timer.get15MinuteRate());
+        values[&#x60;m1_rate&#x60;] &#x3D; this.getNumber(timer.get1MinuteRate());
+        values[&#x60;m5_rate&#x60;] &#x3D; this.getNumber(timer.get5MinuteRate());
+        values[&#x60;max&#x60;] &#x3D; this.getNumber(snapshot.getMax());
+        values[&#x60;mean&#x60;] &#x3D; this.getNumber(snapshot.getMean());
+        values[&#x60;mean_rate&#x60;] &#x3D; this.getNumber(timer.getMeanRate());
+        values[&#x60;min&#x60;] &#x3D; this.getNumber(snapshot.getMin());
+        values[&#x60;p50&#x60;] &#x3D; this.getNumber(snapshot.getMedian());
+        values[&#x60;p75&#x60;] &#x3D; this.getNumber(snapshot.get75thPercentile());
+        values[&#x60;p95&#x60;] &#x3D; this.getNumber(snapshot.get95thPercentile());
+        values[&#x60;p98&#x60;] &#x3D; this.getNumber(snapshot.get98thPercentile());
+        values[&#x60;p99&#x60;] &#x3D; this.getNumber(snapshot.get99thPercentile());
+        values[&#x60;p999&#x60;] &#x3D; this.getNumber(snapshot.get999thPercentile());
+        values[&#x60;stddev&#x60;] &#x3D; this.getNumber(snapshot.getStdDev());
+
+        return values;
+    }
+
+    /**
+     * Either gets 0 or the specifed value.
+     *
+     * @private
+     * @param {number} value
+     * @returns {number}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private static getNumber(value: number): number {
+        if (isNaN(value)) {
+            return 0;
+        }
+        return value;
+    }
+
+    /**
+     * Clock used to determine the current timestamp.
+     *
+     * @private
+     * @type {Clock}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private clock: Clock;
+    /**
+     * Reference for the object returned by the scheduler function.
+     *
+     * @private
+     * @type {NodeJS.Timer}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private timer: NodeJS.Timer;
+    /**
+     * Reporting interval.
+     *
+     * @private
+     * @type {number}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private interval: number;
+    /**
+     * Minimal timeout to include a metric instance into a reporting.
+     *
+     * @private
+     * @type {number}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private minReportingTimeout: number;
+    /**
+     * Time unit for the reporting interval.
+     *
+     * @private
+     * @type {TimeUnit}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private unit: TimeUnit;
+    /**
+     * Tags assigned to this reporter instance - reported for every metric instance.
+     *
+     * @private
+     * @type {Map&lt;string, string&gt;}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private tags: Map&lt;string, string&gt;;
+    /**
+     * Metadata for the logger.
+     *
+     * @private
+     * @type {*}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private logMetadata: any;
+    /**
+     * Minimal logger interface to report failures.
+     *
+     * @private
+     * @type {Logger}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private log: Logger &#x3D; console;
+    /**
+     * Saves the state of each reported metrics.
+     *
+     * @private
+     * @type {Map&lt;number, MetricEntry&gt;}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private metricStates: Map&lt;number, MetricEntry&gt; &#x3D; new Map();
+    /**
+     * Elasticsearch client used to do reporting.
+     *
+     * @private
+     * @type {Client}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private client: Client;
+    /**
+     * Used to get the name of the index.
+     *
+     * @private
+     * @type {MetricInfoDeterminator}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private indexnameDeterminator: MetricInfoDeterminator;
+    /**
+     * Used to get the type of the metric instance.
+     *
+     * @private
+     * @type {MetricInfoDeterminator}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private typeDeterminator: MetricInfoDeterminator;
+    /**
+     * Used to build the document for a metric.
+     *
+     * @private
+     * @type {MetricDocumentBuilder}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private metricDocumentBuilder: MetricDocumentBuilder;
+
+    /**
+     * Creates an instance of ElasticsearchMetricReporter.
+     *
+     * @param {ConfigOptions} clientOptions Elasticsearch client config.
+     * @param [metricDocumentBuilder] A function that constructs an object of a metric that&#x27;s gonna be indexed.
+     * @param [indexnameDeterminator] A function that determines the name of the index for a given metric.
+     * @param [typeDeterminator] A function that determines the name of the type for a given metric.
+     * @param {number} [interval&#x3D;1000] The reporting interval.
+     * @param {TimeUnit} [unit&#x3D;MILLISECOND] The time unit for the reporting interval.
+     * @param {Map&lt;string, string&gt;} [tags&#x3D;new Map()] Tags assigned to every metric.
+     * @param {Clock} [clock&#x3D;new StdClock()] The clock - used to determine the timestamp of the metrics while reporting.
+     * @param {number} [minReportingTimeout&#x3D;1] The time in minutes the reporter sends even unchanged metrics.
+     */
+    public constructor(
+        clientOptions: ConfigOptions,
+        metricDocumentBuilder: MetricDocumentBuilder &#x3D; ElasticsearchMetricReporter.defaultDocumentBuilder(),
+        indexnameDeterminator: MetricInfoDeterminator &#x3D; ElasticsearchMetricReporter.dailyIndex(&quot;metric&quot;),
+        typeDeterminator: MetricInfoDeterminator &#x3D; ElasticsearchMetricReporter.defaultTypeDeterminator(),
+        interval: number &#x3D; 1000,
+        unit: TimeUnit &#x3D; MILLISECOND,
+        tags: Map&lt;string, string&gt; &#x3D; new Map(),
+        clock: Clock &#x3D; new StdClock(),
+        minReportingTimeout &#x3D; 1) {
+        super();
+
+        this.indexnameDeterminator &#x3D; indexnameDeterminator;
+        this.typeDeterminator &#x3D; typeDeterminator;
+        this.metricDocumentBuilder &#x3D; metricDocumentBuilder;
+        this.interval &#x3D; interval;
+        this.unit &#x3D; unit;
+        this.tags &#x3D; tags;
+        this.clock &#x3D; clock;
+        this.minReportingTimeout &#x3D; MINUTE.convertTo(minReportingTimeout, MILLISECOND);
+
+        this.logMetadata &#x3D; {
+            interval,
+            tags,
+            unit,
+        };
+
+        this.client &#x3D; new Client(clientOptions);
+    }
+
+    /**
+     * Gets the reporter tags.
+     *
+     * @returns {Map&lt;string, string&gt;}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public getTags(): Map&lt;string, string&gt; {
+        return this.tags;
+    }
+
+    /**
+     * Sets the reporter tags.
+     *
+     * @param {Map&lt;string, string&gt;} tags
+     * @memberof ElasticsearchMetricReporter
+     */
+    public setTags(tags: Map&lt;string, string&gt;): void {
+        this.tags &#x3D; tags;
+    }
+
+    /**
+     * Gets the logger instance.
+     *
+     * @returns {Logger}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public getLog(): Logger {
+        return this.log;
+    }
+
+    /**
+     * Sets the logger instance.
+     *
+     * @param {Logger} log
+     * @memberof ElasticsearchMetricReporter
+     */
+    public setLog(log: Logger): void {
+        this.log &#x3D; log;
+    }
+
+    /**
+     * Starts the logger reporting loop using {setInterval()}.
+     *
+     * @memberof ElasticsearchMetricReporter
+     */
+    public start(): void {
+        const interval: number &#x3D; this.unit.convertTo(this.interval, MILLISECOND);
+        this.timer &#x3D; setInterval(() &#x3D;&gt; this.report(), interval);
+    }
+
+    /**
+     * Stopps reporting metrics.
+     *
+     * @memberof ElasticsearchMetricReporter
+     */
+    public stop(): void {
+        if (this.timer) {
+            this.timer.unref();
+        }
+    }
+
+    /**
+     * Reports the data points for each registered {@link MetricRegistry}.
+     *
+     * @private
+     * @memberof ElasticsearchMetricReporter
+     */
+    private async report() {
+        this.metricRegistries.forEach((registry) &#x3D;&gt; this.reportMetricRegistry(registry));
+    }
+
+    /**
+     * Reports the data points for the specified {@link MetricRegistry}.
+     *
+     * @private
+     * @param {MetricRegistry} registry
+     * @memberof ElasticsearchMetricReporter
+     */
+    private reportMetricRegistry(registry: MetricRegistry): void {
+        const now: Date &#x3D; new Date(this.clock.time().milliseconds);
+
+        this.reportMetrics(registry, registry.getMonotoneCounterList(), now, &quot;counter&quot;,
+            (counter: MonotoneCounter) &#x3D;&gt; counter.getCount());
+        this.reportMetrics(registry, registry.getCounterList(), now, &quot;counter&quot;,
+            (counter: Counter) &#x3D;&gt; counter.getCount());
+        this.reportMetrics(registry, registry.getGaugeList(), now, &quot;gauge&quot;,
+            (gauge: Gauge&lt;any&gt;) &#x3D;&gt; gauge.getValue());
+        this.reportMetrics(registry, registry.getHistogramList(), now, &quot;histogram&quot;,
+            (histogram: Histogram) &#x3D;&gt; histogram.getCount());
+        this.reportMetrics(registry, registry.getMeterList(), now, &quot;meter&quot;,
+            (meter: Meter) &#x3D;&gt; meter.getCount());
+        this.reportMetrics(registry, registry.getTimerList(), now, &quot;timer&quot;,
+            (timer: Timer) &#x3D;&gt; timer.getCount());
+    }
+
+    /**
+     * Reports a collection of metric instance for a certain type.
+     *
+     * @private
+     * @template T
+     * @param {MetricRegistry} registry
+     * @param {T[]} metrics
+     * @param {Date} date
+     * @param {MetricType} type
+     * @param {(metric: Metric) &#x3D;&gt; number} lastModifiedFunction
+     *      function to determine if a metric has a different value since the last reporting.
+     * @returns {Promise&lt;void&gt;}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private async reportMetrics&lt;T extends Metric&gt;(
+        registry: MetricRegistry,
+        metrics: T[],
+        date: Date,
+        type: MetricType,
+        lastModifiedFunction: (metric: Metric) &#x3D;&gt; number): Promise&lt;void&gt; {
+
+        const body: Array&lt;{}&gt; &#x3D; [];
+        metrics.forEach((metric) &#x3D;&gt; {
+            const metricId &#x3D; (metric as any).id;
+            let changed &#x3D; true;
+            if (metricId) {
+                changed &#x3D; this.hasChanged(metricId, lastModifiedFunction(metric), date);
+            }
+
+            if (changed) {
+                const document &#x3D; this.metricDocumentBuilder(registry, metric, type, date, this.tags);
+                if (!!document) {
+                    // tslint:disable-next-line:variable-name
+                    const _index &#x3D; this.indexnameDeterminator(registry, metric, type, date);
+                    // tslint:disable-next-line:variable-name
+                    const _type &#x3D; this.typeDeterminator(registry, metric, type, date);
+                    body.push({ index: { _index, _type } });
+                    body.push(document);
+                }
+            }
+        });
+
+        if (body.length &gt; 0) {
+            try {
+                const response &#x3D; await this.client.bulk({ body });
+                if (this.log) {
+                    this.log.debug(
+                        &#x60;took ${response.took}ms to write ${type} metrics - errors ${response.errors}&#x60;,
+                        this.logMetadata,
+                    );
+                }
+            } catch (reason) {
+                if (this.log) {
+                    this.log.error(&#x60;error writing ${type} metrics - reason: ${reason}&#x60;, reason, this.logMetadata);
+                }
+            }
+        }
+    }
+
+    /**
+     * Determines if the specified metric has changed. This is always true if
+     * the minimum-reporting timeout was reached.
+     *
+     * @private
+     * @param {number} metricId
+     * @param {number} lastValue
+     * @param {Date} date
+     * @returns {boolean}
+     * @memberof ElasticsearchMetricReporter
+     */
+    private hasChanged(metricId: number, lastValue: number, date: Date): boolean {
+        let changed &#x3D; true;
+        let metricEntry &#x3D; {
+            lastReport: 0,
+            lastValue,
+        };
+        if (this.metricStates.has(metricId)) {
+            metricEntry &#x3D; this.metricStates.get(metricId);
+            changed &#x3D; metricEntry.lastValue !&#x3D;&#x3D; lastValue;
+            if (!changed) {
+                changed &#x3D; metricEntry.lastReport + this.minReportingTimeout &lt; date.getTime();
+            }
+        }
+        if (changed) {
+            metricEntry.lastReport &#x3D; date.getTime();
+        }
+        this.metricStates.set(metricId, metricEntry);
+        return changed;
+    }
+
+}
+</code></pre>
+    </div>
+</div>
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'MetricEntry.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <script src="../js/menu-wc.js"></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
