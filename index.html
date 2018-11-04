@@ -18,10 +18,7 @@
         </div>
 
         <div class="xs-menu menu" id="mobile-menu">
-                <div id="book-search-input" role="search">
-    <input type="text" placeholder="Type to search">
-</div>
-            <compodoc-menu></compodoc-menu>
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
         </div>
 
         <div class="container-fluid main">
@@ -60,12 +57,14 @@ is meant to be used with <code>typescript</code> / <code>nodejs</code>.<br>It us
 import { ElasticsearchMetricReporter } from &quot;inspector-elasticsearch&quot;;
 import { ConfigOptions } from &quot;elasticsearch&quot;;
 
-const reporterConfig: ConfigOptions = {
+const clientOptions: ConfigOptions = {
     apiVersion: &quot;6.0&quot;,
     host: &quot;localhost:9200&quot;,
 };
 // instance the elasticsearch reporter
-const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter(reporterConfig);
+const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter({
+    clientOptions,
+});
 const registry: MetricRegistry = new MetricRegistry();
 
 // add the registry to the reporter
@@ -79,9 +78,9 @@ import {
 } from &quot;inspector-elasticsearch&quot;;
 import { ConfigOptions } from &quot;elasticsearch&quot;;
 
-const reporterConfig: ConfigOptions = { ... };
+const clientOptions: ConfigOptions = { ... };
 // computes the name of the index using the timestamp of the metric
-const indexnameGenerator: MetricInfoDeterminator = (
+const indexnameDeterminator: MetricInfoDeterminator = (
     registry: MetricRegistry,
     metric: Metric,
     type: MetricType,
@@ -94,10 +93,10 @@ const indexnameGenerator: MetricInfoDeterminator = (
     return `metrics-${date.getFullYear()}-${monthPrefix}${month}-${dayPrefix}${day}`;
 };
 // the indexname generator needs to be specified when instancing the reporter
-const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter(
-    reporterConfig,
-    ElasticsearchMetricReporter.defaultDocumentBuilder(),
-    indexnameGenerator,
+const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter({
+    clientOptions,
+    indexnameDeterminator, 
+}
 );</code></pre></div><h3 id="build-a-metric-document">build a metric document</h3>
 <div><pre class="line-numbers"><code class="language-typescript">import { MetricRegistry } from &quot;inspector-metrics&quot;;
 import {
@@ -107,9 +106,9 @@ import {
 } from &quot;inspector-elasticsearch&quot;;
 import { ConfigOptions } from &quot;elasticsearch&quot;;
 
-const reporterConfig: ConfigOptions = { ... };
+const clientOptions: ConfigOptions = { ... };
 // only build documents for counter metrics
-const counterOnlyDocumentBuilder: MetricDocumentBuilder = (
+const metricDocumentBuilder: MetricDocumentBuilder = (
     registry: MetricRegistry,
     metric: Metric,
     type: MetricType,
@@ -129,15 +128,15 @@ const counterOnlyDocumentBuilder: MetricDocumentBuilder = (
 };
 
 // the document builder needs to be specified when instancing the reporter
-const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter(
-    reporterConfig,
-    counterOnlyDocumentBuilder,
-);</code></pre></div><h2 id="dev">dev</h2>
+const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter({
+    clientOptions,
+    metricDocumentBuilder,
+});</code></pre></div><h2 id="dev">dev</h2>
 <h3 id="using-the-playground">using the playground</h3>
 <p>To use the playground you need to have <code>docker</code> and <code>docker-compose</code> installed.</p>
 <div><pre class="line-numbers"><code class="language-bash">npm run compile
 # running playground script
-playground/playground.sh</code></pre></div><h3 id="view-data-in-grafana">view data in grafana</h3>
+./playground.sh</code></pre></div><h3 id="view-data-in-grafana">view data in grafana</h3>
 <ol>
 <li>Navigate to <code>http://localhost:3000</code></li>
 <li>Add a new Data Source (type: elasticsearch, host / url: <a href="http://elasticsearch:9200">http://elasticsearch:9200</a>)</li>
@@ -151,7 +150,15 @@ playground/playground.sh</code></pre></div><h3 id="view-data-in-grafana">view da
 <li>Discover data</li>
 </ol>
 <p><img src="assets/kibana.png" alt="" class="img-responsive"></p>
-<h2 id="license">License</h2>
+<h2 id="local-dev">local dev</h2>
+<h3 id="compile-test-with-different-nodejs-versions">compile &amp; test with different nodejs versions</h3>
+<p>build docker images:  </p>
+<div><pre class="line-numbers"><code class="language-bash">docker-compose build</code></pre></div><p>run tests:  </p>
+<div><pre class="line-numbers"><code class="language-bash">docker-compose run node6
+docker-compose run node7
+docker-compose run node8
+docker-compose run node9
+docker-compose run node10</code></pre></div><h2 id="license">License</h2>
 <p><a href="https://www.opensource.org/licenses/mit-license.php">MIT</a></p>
 
 
@@ -193,7 +200,9 @@ playground/playground.sh</code></pre></div><h3 id="view-data-in-grafana">view da
 
        <script src="./js/libs/custom-elements.min.js"></script>
        <script src="./js/libs/lit-html.js"></script>
-       <script src="./js/menu-wc.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="./js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="./js/menu-wc.js" defer></script>
 
        <script src="./js/libs/bootstrap-native.js"></script>
 
