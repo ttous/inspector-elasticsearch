@@ -1,5 +1,5 @@
 {
-  "name": "inspector-elasticsearch",
+  "name": "@doubret/inspector-elasticsearch",
   "description": "Elasticsearch metric reporter for nodejs",
   "homepage": "https://rstiller.github.io/inspector-elasticsearch/",
   "version": "2.0.0",
@@ -45,8 +45,11 @@
   },
   "dependencies": {
     "elasticsearch": "^15.2.0",
-    "inspector-metrics": "^1.15.0",
+    "inspector-metrics": "^1.16.0",
     "source-map-support": "^0.5.9"
+  },
+  "peerDependencies": {
+    "inspector-metrics": "^1.16.0"
   },
   "files": [
     "build",
