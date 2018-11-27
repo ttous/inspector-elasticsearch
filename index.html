@@ -96,9 +96,8 @@ const indexnameDeterminator: MetricInfoDeterminator = (
 const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter({
     clientOptions,
     indexnameDeterminator, 
-}
-);</code></pre></div><h3 id="build-a-metric-document">build a metric document</h3>
-<div><pre class="line-numbers"><code class="language-typescript">import { MetricRegistry } from &quot;inspector-metrics&quot;;
+});</code></pre></div><h3 id="build-a-metric-document">build a metric document</h3>
+<div><pre class="line-numbers"><code class="language-typescript">import { MetricRegistry, Tags } from &quot;inspector-metrics&quot;;
 import {
     ElasticsearchMetricReporter,
     MetricDocumentBuilder,
@@ -113,13 +112,13 @@ const metricDocumentBuilder: MetricDocumentBuilder = (
     metric: Metric,
     type: MetricType,
     timestamp: Date,
-    commonTags: Map&lt;string, string&gt;) =&gt; {
+    commonTags: Tags) =&gt; {
 
     if (metric instanceof Counter) {
-        const tags = ElasticsearchMetricReporter.buildTags(commonTags, metric);
+        const tags = commonTags;
         const name = metric.getName();
         const group = metric.getGroup();
-        return { name, group, tags, timestamp, values: { &#39;count&#39;: metric.getCount() }, type };
+        return { name, group, tags, timestamp, values: { count: metric.getCount() }, type };
 
     } else {
         // null values will not be reported / published
@@ -134,15 +133,15 @@ const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter({
 });</code></pre></div><h2 id="dev">dev</h2>
 <h3 id="using-the-playground">using the playground</h3>
 <p>To use the playground you need to have <code>docker</code> and <code>docker-compose</code> installed.</p>
-<div><pre class="line-numbers"><code class="language-bash">npm run compile
+<div><pre class="line-numbers"><code class="language-bash"># boots all services (graphite / grafana) and provisions the example dashboard
+test-env/boot.sh
 # running playground script
 ./playground.sh</code></pre></div><h3 id="view-data-in-grafana">view data in grafana</h3>
 <ol>
 <li>Navigate to <code>http://localhost:3000</code></li>
-<li>Add a new Data Source (type: elasticsearch, host / url: <a href="http://elasticsearch:9200">http://elasticsearch:9200</a>)</li>
-<li>Create a new graph</li>
+<li>Navigate to the example dashboard (upper left corner &quot;Home&quot;): &quot;Elasticsearch example dashboard&quot;</li>
 </ol>
-<p><img src="assets/grafana.png" alt="" class="img-responsive"></p>
+<p><img src="assets/example-dashboard.png" alt="Example Dashboard" class="img-responsive"></p>
 <h3 id="view-data-in-kibana">view data in kibana</h3>
 <ol>
 <li>Navigate to <code>http://localhost:5601</code></li>
@@ -158,7 +157,8 @@ const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter({
 docker-compose run node7
 docker-compose run node8
 docker-compose run node9
-docker-compose run node10</code></pre></div><h2 id="license">License</h2>
+docker-compose run node10
+docker-compose run node11</code></pre></div><h2 id="license">License</h2>
 <p><a href="https://www.opensource.org/licenses/mit-license.php">MIT</a></p>
 
 

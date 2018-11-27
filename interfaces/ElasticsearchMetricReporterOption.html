@@ -303,6 +303,7 @@ import { Client, ConfigOptions } from &quot;elasticsearch&quot;;
 import {
     Clock,
     Counter,
+    Event,
     Gauge,
     Histogram,
     Logger,
@@ -767,6 +768,41 @@ export class ElasticsearchMetricReporter extends ScheduledMetricReporter&lt;Elas
     }
 
     /**
+     * Reports an {@link Event}.
+     *
+     * @param {Event} event
+     * @returns {Promise&lt;TEvent&gt;}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public async reportEvent&lt;TEventData, TEvent extends Event&lt;TEventData&gt;&gt;(event: TEvent): Promise&lt;TEvent&gt; {
+        const result &#x3D; this.reportGauge(event, {
+            date: event.getTime(),
+            metrics: [],
+            overallCtx: null,
+            registry: null,
+            type: &quot;gauge&quot;,
+        });
+
+        if (result) {
+            await this.handleResults(null, null, event.getTime(), &quot;gauge&quot;, [{
+                metric: event,
+                result,
+            }]);
+        }
+
+        return event;
+    }
+
+    /**
+     * Does nothing
+     *
+     * @returns {Promise&lt;void&gt;}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public async flushEvents(): Promise&lt;void&gt; {
+    }
+
+    /**
      * Send the combinations of index and document to the elasticsearch cluster
      * using the bulk method of the elasticsearch client.
      *
@@ -786,7 +822,12 @@ export class ElasticsearchMetricReporter extends ScheduledMetricReporter&lt;Elas
         results: Array&lt;ReportingResult&lt;any, any[]&gt;&gt;): Promise&lt;void&gt; {
         const body &#x3D; results
             .map((result) &#x3D;&gt; result.result)
-            .reduce((p, c) &#x3D;&gt; p.concat(c));
+            .reduce((p, c) &#x3D;&gt; p.concat(c), []);
+
+        if (!body || body.length &#x3D;&#x3D;&#x3D; 0) {
+            return Promise.resolve();
+        }
+
         return this.client.bulk({ body })
             .then((response) &#x3D;&gt; {
                 if (this.options.log) {
