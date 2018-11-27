@@ -470,30 +470,38 @@ export class ElasticsearchMetricReporter extends ScheduledMetricReporter<Elastic
     }
 
     /**
-     * Reports an event.
+     * Reports an {@link Event}.
      *
-     * @public
-     * @param {TEvent} event
+     * @param {Event} event
      * @returns {Promise<TEvent>}
      * @memberof ElasticsearchMetricReporter
      */
-    public reportEvent<TEventData, TEvent extends Event<TEventData>>(event: TEvent): Promise<TEvent> {
-        const value = event.getValue();
-        if (!value) {
-            return Promise.reject(new Error("Invalid event value"));
+    public async reportEvent<TEventData, TEvent extends Event<TEventData>>(event: TEvent): Promise<TEvent> {
+        const result = this.reportGauge(event, {
+            date: event.getTime(),
+            metrics: [],
+            overallCtx: null,
+            registry: null,
+            type: "gauge",
+        });
+
+        if (result) {
+            await this.handleResults(null, null, event.getTime(), "gauge", [{
+                metric: event,
+                result,
+            }]);
         }
-        const ctx = this.createMetricSetReportContext(null, null, event.getTime(), "gauge");
-        const results = this.reportMetrics(
-            null,
-            ctx,
-            (m: Event<any>, c) => this.reportGauge(m, c),
-            (m: Event<any>) => m.getValue(),
-        );
-        return this.handleResults(null, null, event.getTime(), "gauge", results)
-            .then(() => event)
-            .catch((reason: Error) => {
-                throw reason;
-            });
+
+        return event;
+    }
+
+    /**
+     * Does nothing
+     *
+     * @returns {Promise<void>}
+     * @memberof ElasticsearchMetricReporter
+     */
+    public async flushEvents(): Promise<void> {
     }
 
     /**
@@ -516,7 +524,12 @@ export class ElasticsearchMetricReporter extends ScheduledMetricReporter<Elastic
         results: Array<ReportingResult<any, any[]>>): Promise<void> {
         const body = results
             .map((result) => result.result)
-            .reduce((p, c) => p.concat(c));
+            .reduce((p, c) => p.concat(c), []);
+
+        if (!body || body.length === 0) {
+            return Promise.resolve();
+        }
+
         return this.client.bulk({ body })
             .then((response) => {
                 if (this.options.log) {

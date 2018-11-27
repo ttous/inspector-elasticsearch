@@ -1,10 +1,10 @@
-import { MetricRegistry, Timer } from "inspector-metrics";
-import { ElasticsearchMetricReporter } from "../lib/metrics/ElasticsearchMetricReporter";
+import { Event, MetricRegistry, Timer } from "inspector-metrics";
+import { ElasticsearchMetricReporter } from "../lib/metrics";
 
 const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter({
     clientOptions: {
         apiVersion: "6.0",
-        host: "elasticsearch:9200",
+        host: "localhost:9200",
     },
 });
 const registry: MetricRegistry = new MetricRegistry();
@@ -21,8 +21,20 @@ requests3.setTag("host", "127.0.0.3");
 
 // quick & dirty hack ...
 global.console.debug = global.console.info;
-reporter.setLog(global.console);
+reporter.setLog(null);
 reporter.addMetricRegistry(registry);
+
+const event = new Event<number>("application_started")
+    .setValue(1.0)
+    .setTag("mode", "test")
+    .setTag("customTag", "specialValue");
+
+try {
+    reporter.reportEvent(event);
+} catch (e) {
+    // tslint:disable-next-line:no-console
+    console.log(e);
+}
 
 reporter.start();
 

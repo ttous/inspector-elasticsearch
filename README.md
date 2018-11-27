@@ -76,14 +76,13 @@ const indexnameDeterminator: MetricInfoDeterminator = (
 const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter({
     clientOptions,
     indexnameDeterminator, 
-}
-);
+});
 ```
 
 ### build a metric document
 
 ```typescript
-import { MetricRegistry } from "inspector-metrics";
+import { MetricRegistry, Tags } from "inspector-metrics";
 import {
     ElasticsearchMetricReporter,
     MetricDocumentBuilder,
@@ -98,13 +97,13 @@ const metricDocumentBuilder: MetricDocumentBuilder = (
     metric: Metric,
     type: MetricType,
     timestamp: Date,
-    commonTags: Map<string, string>) => {
+    commonTags: Tags) => {
 
     if (metric instanceof Counter) {
-        const tags = ElasticsearchMetricReporter.buildTags(commonTags, metric);
+        const tags = commonTags;
         const name = metric.getName();
         const group = metric.getGroup();
-        return { name, group, tags, timestamp, values: { 'count': metric.getCount() }, type };
+        return { name, group, tags, timestamp, values: { count: metric.getCount() }, type };
 
     } else {
         // null values will not be reported / published
@@ -126,7 +125,8 @@ const reporter: ElasticsearchMetricReporter = new ElasticsearchMetricReporter({
 To use the playground you need to have `docker` and `docker-compose` installed.
 
 ```bash
-npm run compile
+# boots all services (elasticsearch / grafana) and provisions the example dashboard
+test-env/boot.sh
 # running playground script
 ./playground.sh
 ```
@@ -134,10 +134,9 @@ npm run compile
 ### view data in grafana
 
 1. Navigate to `http://localhost:3000`
-1. Add a new Data Source (type: elasticsearch, host / url: http://elasticsearch:9200)
-1. Create a new graph
+1. Navigate to the example dashboard (upper left corner "Home"): "Elasticsearch example dashboard"
 
-![](assets/grafana.png)
+![Example Dashboard](assets/example-dashboard.png)
 
 ### view data in kibana
 
@@ -163,6 +162,7 @@ docker-compose run node7
 docker-compose run node8
 docker-compose run node9
 docker-compose run node10
+docker-compose run node11
 ```
 
 ## License
