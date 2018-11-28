@@ -1,5 +1,5 @@
 {
-  "name": "@doubret/inspector-elasticsearch",
+  "name": "inspector-elasticsearch",
   "description": "Elasticsearch metric reporter for nodejs",
   "homepage": "https://rstiller.github.io/inspector-elasticsearch/",
   "version": "2.1.0",
