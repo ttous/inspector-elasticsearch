@@ -228,10 +228,10 @@ export class ElasticsearchMetricReporter extends ScheduledMetricReporter<Elastic
         if ((!value && value !== 0) || Number.isNaN(value)) {
             return null;
         }
-        if (typeof value === "number") {
-            return { value };
+        if (typeof value === "object") {
+            return value;
         }
-        return value;
+        return { value };
     }
 
     /**
