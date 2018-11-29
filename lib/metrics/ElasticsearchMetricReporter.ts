@@ -225,10 +225,10 @@ export class ElasticsearchMetricReporter extends ScheduledMetricReporter<Elastic
      */
     public static getGaugeValue(gauge: Gauge<any>): {} {
         const value = gauge.getValue();
-        if (!value) {
+        if ((!value && value !== 0) || Number.isNaN(value)) {
             return null;
         }
-        if (value instanceof Number) {
+        if (typeof value === "number") {
             return { value };
         }
         return value;
