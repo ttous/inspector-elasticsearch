@@ -329,7 +329,8 @@ import {
  * Interface for getting a certain information using the specified emtric metadata -
  * e.g. name of the index, metric type, etc.
  */
-export type MetricInfoDeterminator &#x3D; (registry: MetricRegistry, metric: Metric, type: MetricType, date: Date) &#x3D;&gt; string;
+export type MetricInfoDeterminator &#x3D;
+    (registry: MetricRegistry, metric: Metric, type: MetricType, date: Date) &#x3D;&gt; string;
 
 /**
  * Interface for building a document for a metric.
@@ -523,8 +524,11 @@ export class ElasticsearchMetricReporter extends ScheduledMetricReporter&lt;Elas
      */
     public static getGaugeValue(gauge: Gauge&lt;any&gt;): {} {
         const value &#x3D; gauge.getValue();
-        if (!value || isNaN(value)) {
+        if ((!value &amp;&amp; value !&#x3D;&#x3D; 0) || Number.isNaN(value)) {
             return null;
+        }
+        if (typeof value &#x3D;&#x3D;&#x3D; &quot;object&quot;) {
+            return value;
         }
         return { value };
     }
@@ -668,62 +672,62 @@ export class ElasticsearchMetricReporter extends ScheduledMetricReporter&lt;Elas
             minReportingTimeout &#x3D; 1,
             tags &#x3D; new Map(),
         }: {
-            /**
-             * Elasticsearch client options.
-             * @type {ConfigOptions}
-             */
-            clientOptions: ConfigOptions,
-            /**
-             * Used to build the document for a metric.
-             * @type {MetricDocumentBuilder}
-             */
-            metricDocumentBuilder?: MetricDocumentBuilder,
-            /**
-             * Used to get the name of the index.
-             * @type {MetricInfoDeterminator}
-             */
-            indexnameDeterminator?: MetricInfoDeterminator,
-            /**
-             * Used to get the type of the metric instance.
-             * @type {MetricInfoDeterminator}
-             */
-            typeDeterminator?: MetricInfoDeterminator,
-            /**
-             * The logger instance used to report metrics.
-             * @type {Logger}
-             */
-            log?: Logger,
-            /**
-             * Reporting interval in the time-unit of {@link #unit}.
-             * @type {number}
-             */
-            reportInterval?: number;
-            /**
-             * The time-unit of the reporting interval.
-             * @type {TimeUnit}
-             */
-            unit?: TimeUnit;
-            /**
-             * The clock instance used determine the current time.
-             * @type {Clock}
-             */
-            clock?: Clock;
-            /**
-             * The scheduler function used to trigger reporting.
-             * @type {Scheduler}
-             */
-            scheduler?: Scheduler;
-            /**
-             * The timeout in which a metrics gets reported wether it&#x27;s value has changed or not.
-             * @type {number}
-             */
-            minReportingTimeout?: number;
-            /**
-             * Common tags for this reporter instance.
-             * @type {Map&lt;string, string&gt;}
-             */
-            tags?: Map&lt;string, string&gt;;
-        }) {
+                /**
+                 * Elasticsearch client options.
+                 * @type {ConfigOptions}
+                 */
+                clientOptions: ConfigOptions,
+                /**
+                 * Used to build the document for a metric.
+                 * @type {MetricDocumentBuilder}
+                 */
+                metricDocumentBuilder?: MetricDocumentBuilder,
+                /**
+                 * Used to get the name of the index.
+                 * @type {MetricInfoDeterminator}
+                 */
+                indexnameDeterminator?: MetricInfoDeterminator,
+                /**
+                 * Used to get the type of the metric instance.
+                 * @type {MetricInfoDeterminator}
+                 */
+                typeDeterminator?: MetricInfoDeterminator,
+                /**
+                 * The logger instance used to report metrics.
+                 * @type {Logger}
+                 */
+                log?: Logger,
+                /**
+                 * Reporting interval in the time-unit of {@link #unit}.
+                 * @type {number}
+                 */
+                reportInterval?: number;
+                /**
+                 * The time-unit of the reporting interval.
+                 * @type {TimeUnit}
+                 */
+                unit?: TimeUnit;
+                /**
+                 * The clock instance used determine the current time.
+                 * @type {Clock}
+                 */
+                clock?: Clock;
+                /**
+                 * The scheduler function used to trigger reporting.
+                 * @type {Scheduler}
+                 */
+                scheduler?: Scheduler;
+                /**
+                 * The timeout in which a metrics gets reported wether it&#x27;s value has changed or not.
+                 * @type {number}
+                 */
+                minReportingTimeout?: number;
+                /**
+                 * Common tags for this reporter instance.
+                 * @type {Map&lt;string, string&gt;}
+                 */
+                tags?: Map&lt;string, string&gt;;
+            }) {
         super({
             clientOptions,
             clock,
