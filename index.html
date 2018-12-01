@@ -70,7 +70,7 @@ const registry: MetricRegistry = new MetricRegistry();
 // add the registry to the reporter
 reporter.addMetricRegistry(registry);
 // start reporting
-reporter.start();</code></pre></div><h3 id="determine-the-indexname-for-a-metric">determine the indexname for a metric</h3>
+await reporter.start();</code></pre></div><h3 id="determine-the-indexname-for-a-metric">determine the indexname for a metric</h3>
 <div><pre class="line-numbers"><code class="language-typescript">import { MetricRegistry } from &quot;inspector-metrics&quot;;
 import {
     ElasticsearchMetricReporter,
