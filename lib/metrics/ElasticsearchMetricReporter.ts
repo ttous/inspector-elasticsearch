@@ -27,7 +27,7 @@ import {
 } from "inspector-metrics";
 
 /**
- * Interface for getting a certain information using the specified emtric metadata -
+ * Interface for getting a certain information using the specified metric metadata -
  * e.g. name of the index, metric type, etc.
  */
 export type MetricInfoDeterminator =
